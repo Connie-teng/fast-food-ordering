@@ -4,7 +4,7 @@
 
 ## 🌐 Demo
 
-👉 [點我開啟網站](https://Connie-teng.github.io/maidangdang/maidangdang.html)
+👉 [點我開啟網站](https://connie-teng.github.io/fast-food-ordering/maidangdang.html)
 
 ---
 
