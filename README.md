@@ -1,4 +1,4 @@
-# 🍔 賣噹噹 M·Dong·Dong Fast Food
+# 🍔 賣噹噹 
 
 一個以 HTML / CSS / JavaScript 製作的速食店點餐網站，無需後端、無需安裝，直接用瀏覽器開啟即可使用。
 
