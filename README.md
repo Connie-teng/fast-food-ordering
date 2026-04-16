@@ -28,7 +28,7 @@
 
 ```bash
 # clone 專案
-git clone https://github.com/你的帳號/maidangdang.git
+git clone https://github.com/Connie-teng/fast-food-ordering.git
 
 # 用瀏覽器開啟
 open maidangdang.html
