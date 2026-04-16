@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賣噹噹 M·Dong·Dong Fast Food</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:    #E8001D;
+    --yellow: #FFC300;
+    --cream:  #FFF8EC;
+    --dark:   #1A0A00;
+    --brown:  #3D1C00;
+    --orange: #FF6B00;
+    --green:  #00A86B;
+    --gray:   #F5F0E8;
+    --shadow: 0 4px 24px rgba(26,10,0,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND PATTERN ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: -1;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,195,0,0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(232,0,29,0.08) 0%, transparent 40%),
+      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,195,0,0.04) 40px, rgba(255,195,0,0.04) 41px);
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--red);
+    color: #fff;
+    text-align: center;
+    padding: 20px 16px 16px;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 6px solid var(--yellow);
+  }
+  header::after {
+    content: '🍔🍟🥤🍦🐔';
+    position: absolute; bottom: -8px; left: 0; right: 0;
+    font-size: 22px; letter-spacing: 14px;
+    opacity: 0.15; white-space: nowrap; overflow: hidden;
+  }
+  .logo-en {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 5px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 4px;
+  }
+  .logo-zh {
+    font-size: 42px; font-weight: 900; line-height: 1;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+    letter-spacing: 4px;
+  }
+  .logo-zh span { color: var(--yellow); }
+  .header-sub {
+    font-size: 12px; color: rgba(255,255,255,0.75);
+    margin-top: 6px; letter-spacing: 2px;
+  }
+
+  /* ── DAILY SPECIAL BANNER ── */
+  .daily-banner {
+    background: var(--yellow);
+    color: var(--dark);
+    text-align: center;
+    padding: 10px 16px;
+    font-weight: 700; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    animation: pulse-banner 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-banner {
+    0%,100% { background: var(--yellow); }
+    50%      { background: #FFD740; }
+  }
+  .daily-banner .old-price { text-decoration: line-through; opacity: 0.55; font-weight: 400; }
+  .daily-banner .new-price { color: var(--red); font-size: 18px; }
+
+  /* ── MAIN LAYOUT ── */
+  .app { max-width: 960px; margin: 0 auto; padding: 20px 12px 80px; }
+
+  /* ── MEMBER BAR ── */
+  .member-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--dark); color: #fff;
+    padding: 10px 16px; border-radius: 12px;
+    margin-bottom: 20px; font-size: 14px;
+    box-shadow: var(--shadow);
+  }
+  .member-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--yellow); color: var(--dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900; flex-shrink: 0;
+  }
+  .member-info { flex: 1; }
+  .member-name { font-weight: 700; font-size: 15px; }
+  .member-pts  { font-size: 11px; color: rgba(255,255,255,0.6); }
+  .btn-member {
+    background: var(--yellow); color: var(--dark);
+    border: none; border-radius: 8px;
+    padding: 7px 14px; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: transform .15s, background .15s;
+  }
+  .btn-member:hover { transform: scale(1.05); background: #FFD740; }
+
+  /* ── SECTION TABS ── */
+  .tabs {
+    display: flex; gap: 6px; margin-bottom: 20px;
+    background: var(--brown); padding: 6px; border-radius: 14px;
+  }
+  .tab {
+    flex: 1; padding: 10px 6px; border: none; border-radius: 10px;
+    background: transparent; color: rgba(255,255,255,0.6);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .tab .tab-icon { font-size: 20px; }
+  .tab.active { background: var(--yellow); color: var(--dark); }
+  .tab:hover:not(.active) { color: #fff; background: rgba(255,255,255,0.1); }
+
+  /* ── PANELS ── */
+  .panel { display: none; animation: fadeUp .3s ease; }
+  .panel.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(12px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px; letter-spacing: 3px;
+    color: var(--red); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 3px;
+    background: linear-gradient(90deg, var(--red), transparent);
+    border-radius: 2px;
+  }
+
+  /* ── MEAL CARDS ── */
+  .meal-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  .meal-card {
+    background: #fff; border-radius: 20px;
+    border: 2.5px solid transparent;
+    overflow: hidden; cursor: pointer;
+    transition: all .25s; position: relative;
+    box-shadow: 0 2px 12px rgba(26,10,0,0.08);
+  }
+  .meal-card:hover { transform: translateY(-6px); border-color: var(--yellow); box-shadow: 0 12px 32px rgba(26,10,0,0.16); }
+  .meal-card.selected { border-color: var(--red); }
+
+  .meal-img-wrap {
+    position: relative; width: 100%; height: 150px; overflow: hidden;
+    background: #FFF3E0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .meal-img-wrap svg {
+    width: 100%; height: 100%;
+    transition: transform .35s ease;
+    display: block;
+  }
+  .meal-card:hover .meal-img-wrap svg { transform: scale(1.06); }
+  .meal-img-badge {
+    position: absolute; top: 10px; left: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; line-height: 1;
+    background: var(--red); color: #fff;
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .meal-img-price {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(26,10,0,0.75); color: var(--yellow);
+    font-weight: 900; font-size: 16px;
+    padding: 4px 10px; border-radius: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* card body */
+  .meal-body { padding: 14px 14px 14px; }
+  .meal-name { font-weight: 900; font-size: 15px; margin-bottom: 4px; }
+  .meal-items { font-size: 12px; color: #888; line-height: 1.7; margin-bottom: 10px; }
+  .meal-price {
+    font-weight: 900; font-size: 20px; color: var(--dark);
+  }
+  .meal-price span { font-size: 12px; font-weight: 400; }
+  .meal-qty-row {
+    display: flex; align-items: center; gap: 6px; margin-top: 10px;
+  }
+  .qty-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid var(--red); background: #fff;
+    color: var(--red); font-size: 16px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .qty-btn:hover { background: var(--red); color: #fff; }
+  .qty-num { font-weight: 700; min-width: 22px; text-align: center; font-size: 15px; }
+
+  /* ── PRODUCT LIST ── */
+  .product-list { display: flex; flex-direction: column; gap: 10px; }
+  .product-row {
+    background: #fff; border-radius: 14px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 10px rgba(26,10,0,0.07);
+    transition: transform .15s;
+  }
+  .product-row:hover { transform: translateX(4px); }
+  .product-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px; color: rgba(0,0,0,0.3); min-width: 22px;
+  }
+  .product-emoji { font-size: 26px; }
+  .product-name { flex: 1; font-weight: 700; font-size: 15px; }
+  .product-special-tag {
+    font-size: 10px; font-weight: 700; background: var(--red);
+    color: #fff; padding: 2px 6px; border-radius: 6px; margin-left: 6px;
+  }
+  .product-price { font-weight: 900; font-size: 16px; color: var(--dark); }
+  .product-old   { text-decoration: line-through; color: #aaa; font-size: 13px; margin-right: 4px; }
+
+  /* ── CART ── */
+  .cart-empty {
+    text-align: center; padding: 60px 20px;
+    font-size: 15px; color: #aaa;
+  }
+  .cart-empty .big-emoji { font-size: 64px; display: block; margin-bottom: 12px; }
+
+  .cart-item {
+    background: #fff; border-radius: 14px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(26,10,0,0.07);
+  }
+  .cart-item-name { flex: 1; font-weight: 700; }
+  .cart-item-qty  { color: #888; font-size: 13px; }
+  .cart-item-price { font-weight: 900; color: var(--red); }
+  .cart-remove {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: none; background: #FFF0F0; color: var(--red);
+    font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .cart-remove:hover { background: var(--red); color: #fff; }
+
+  .cart-summary {
+    background: var(--dark); color: #fff; border-radius: 16px;
+    padding: 20px; margin-top: 20px;
+  }
+  .cart-summary .row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+  .cart-summary .total { font-size: 24px; font-weight: 900; color: var(--yellow); }
+  .cart-summary .discount-note { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+  /* ── CHECKOUT ── */
+  .checkout-section { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(26,10,0,0.07); }
+  .checkout-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+  .pay-options { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pay-opt {
+    flex: 1; min-width: 100px; padding: 14px; border-radius: 12px;
+    border: 2.5px solid #eee; background: #fafafa; cursor: pointer;
+    text-align: center; font-size: 13px; font-weight: 700;
+    transition: all .18s;
+  }
+  .pay-opt .pay-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .pay-opt:hover, .pay-opt.selected { border-color: var(--red); background: #fff5f5; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: block; width: 100%; padding: 16px;
+    background: var(--red); color: #fff;
+    border: none; border-radius: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 17px; font-weight: 900; cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 4px 16px rgba(232,0,29,0.35);
+    letter-spacing: 1px;
+  }
+  .btn-primary:hover { background: #c5001a; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,0,29,0.4); }
+  .btn-primary:disabled { background: #ccc; box-shadow: none; transform: none; cursor: not-allowed; }
+
+  .btn-secondary {
+    display: inline-block; padding: 10px 20px;
+    background: var(--gray); color: var(--dark);
+    border: none; border-radius: 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-secondary:hover { background: #e8e3db; }
+
+  /* ── BOTTOM CART BAR ── */
+  .cart-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--dark); color: #fff;
+    padding: 12px 16px; display: flex; align-items: center; gap: 12px;
+    z-index: 100;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+  }
+  .cart-bar-icon { font-size: 26px; position: relative; cursor: pointer; }
+  .cart-badge {
+    position: absolute; top: -6px; right: -8px;
+    background: var(--red); color: #fff;
+    font-size: 10px; font-weight: 900;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cart-bar-total { flex: 1; font-size: 20px; font-weight: 900; color: var(--yellow); }
+  .cart-bar-sub   { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 200; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: #fff; border-radius: 24px; padding: 28px 24px;
+    width: min(440px, 94vw); max-height: 90vh; overflow-y: auto;
+    transform: translateY(20px); transition: transform .25s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal h2 { font-size: 22px; font-weight: 900; margin-bottom: 18px; }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; font-size: 22px; cursor: pointer;
+    color: #aaa;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #666; }
+  .form-input {
+    width: 100%; padding: 12px 14px; border-radius: 10px;
+    border: 2px solid #e8e8e8; font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: border-color .15s;
+  }
+  .form-input:focus { outline: none; border-color: var(--red); }
+
+  /* ── RECEIPT ── */
+  .receipt {
+    background: #fff; border-radius: 20px; padding: 28px 22px;
+    max-width: 380px; margin: 0 auto;
+    border: 3px dashed #ddd;
+    font-family: 'Space Mono', monospace;
+  }
+  .receipt-header { text-align: center; margin-bottom: 20px; }
+  .receipt-logo { font-size: 36px; font-weight: 900; color: var(--red); letter-spacing: 2px; }
+  .receipt-date { font-size: 11px; color: #999; }
+  .receipt-divider { border: none; border-top: 2px dashed #ddd; margin: 16px 0; }
+  .receipt-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+  .receipt-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; margin-top: 8px; }
+  .receipt-thanks { text-align: center; margin-top: 20px; font-size: 12px; color: #aaa; }
+
+  /* ── TOAST ── */
+  .toast-container { position: fixed; top: 16px; right: 16px; z-index: 500; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--dark); color: #fff; padding: 12px 18px; border-radius: 12px;
+    font-size: 14px; font-weight: 600; max-width: 280px;
+    animation: toastIn .3s ease;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+  @keyframes toastIn {
+    from { opacity:0; transform: translateX(20px); }
+    to   { opacity:1; transform: translateX(0); }
+  }
+  .toast.success { border-left: 4px solid var(--green); }
+  .toast.info    { border-left: 4px solid var(--yellow); }
+  .toast.error   { border-left: 4px solid var(--red); }
+
+  /* ── DISCOUNT BADGE ── */
+  .discount-chip {
+    display: inline-block; background: var(--red); color: #fff;
+    font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 20px;
+    margin-left: 6px;
+  }
+
+  /* ── LUCKY WHEEL ANIMATION ── */
+  .wheel-anim {
+    text-align: center; padding: 30px;
+    font-size: 60px;
+    animation: spin-emoji .6s ease-in-out infinite alternate;
+  }
+  @keyframes spin-emoji {
+    from { transform: rotate(-15deg) scale(1); }
+    to   { transform: rotate(15deg) scale(1.15); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .meal-grid { grid-template-columns: 1fr 1fr; }
+    .logo-zh { font-size: 34px; }
+  }
+
+  /* ── MEMBER POINTS PILL ── */
+  .pts-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--yellow); color: var(--dark);
+    border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 700;
+  }
+  /* ── AI OPT BUTTONS ── */
+  .ai-opt-btn {
+    padding: 8px 16px; border-radius: 20px; border: 2px solid #e0e0e0;
+    background: #fafafa; font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px; font-weight: 700; cursor: pointer; color: #666;
+    transition: all .15s;
+  }
+  .ai-opt-btn.active { border-color: var(--red); background: #fff0f0; color: var(--red); }
+  .ai-opt-btn:hover:not(.active) { border-color: #ccc; background: #f0f0f0; }
+
+  /* ── AI RESULT CARD ── */
+  .ai-result-card {
+    background: linear-gradient(135deg, #fffbf0, #fff8e1);
+    border: 2px solid var(--yellow); border-radius: 16px; padding: 16px;
+    margin-bottom: 10px;
+  }
+  .ai-result-card .tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px; margin-bottom: 8px;
+  }
+  .ai-result-card .tag.best { background: var(--red); color: #fff; }
+  .ai-result-card .tag.alt  { background: var(--yellow); color: var(--dark); }
+  .ai-result-title { font-weight: 900; font-size: 15px; margin-bottom: 6px; }
+  .ai-result-items { font-size: 13px; color: #666; line-height: 1.8; }
+  .ai-result-meta  { display: flex; gap: 12px; margin-top: 10px; font-size: 12px; font-weight: 700; }
+  .ai-result-meta span { display: flex; align-items: center; gap: 4px; }
+  .ai-add-btn {
+    margin-top: 10px; width: 100%; padding: 10px; border-radius: 10px;
+    border: none; background: var(--dark); color: #fff;
+    font-family: 'Noto Sans TC', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: background .15s;
+  }
+  .ai-add-btn:hover { background: var(--red); }
+
+  /* ── CALORIE BADGE on meal card ── */
+  .cal-badge {
+    position: absolute; top: 10px; right: 10px;
+    background: rgba(255,255,255,0.9); color: #E65100;
+    font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 20px;
+    backdrop-filter: blur(4px);
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="logo-en">M · D O N G · D O N G  F A S T  F O O D</div>
+  <div class="logo-zh">賣<span>噹</span>噹</div>
+  <div class="header-sub">歡迎光臨 ✦ 美味快速 ✦ 超值享受</div>
+</header>
+
+<!-- ── DAILY SPECIAL ── -->
+<div class="daily-banner" id="dailyBanner">
+  🌟 今日特餐：<strong id="dailyName"></strong>
+  <span class="old-price" id="dailyOld"></span>
+  <span class="new-price" id="dailyNew"></span>
+  立即選購！
+</div>
+
+<!-- ── MAIN APP ── -->
+<div class="app">
+
+  <!-- MEMBER BAR -->
+  <div class="member-bar">
+    <div class="member-avatar" id="memberAvatar">👤</div>
+    <div class="member-info">
+      <div class="member-name" id="memberName">訪客</div>
+      <div class="member-pts" id="memberPts">登入享九五折 + 積分回饋</div>
+    </div>
+    <button class="btn-member" onclick="openMemberModal()">登入 / 加入</button>
+  </div>
+
+  <!-- CALORIE BAR -->
+  <div id="calorieBar" style="display:none; background:#fff; border-radius:14px; padding:12px 16px; margin-bottom:14px; box-shadow:0 2px 12px rgba(26,10,0,0.08);">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+      <span style="font-size:18px">🔥</span>
+      <span style="font-weight:700; font-size:14px; flex:1">今日熱量累計</span>
+      <span id="calTotal" style="font-weight:900; font-size:18px; color:var(--red)">0</span>
+      <span style="font-size:12px; color:#aaa"> kcal</span>
+      <span id="calJudge" style="font-size:12px; font-weight:700; padding:3px 10px; border-radius:20px; background:#eee; color:#666; margin-left:4px;"></span>
+    </div>
+    <div style="background:#f0ece4; border-radius:99px; height:10px; overflow:hidden;">
+      <div id="calBar" style="height:100%; border-radius:99px; background:linear-gradient(90deg,var(--green),var(--yellow),var(--red)); transition:width .5s ease; width:0%;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:10px; color:#bbb; margin-top:4px;">
+      <span>0</span><span>建議上限 2000 kcal</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('meals',this)">
+      <span class="tab-icon">🍱</span>指定套餐
+    </button>
+    <button class="tab" onclick="switchTab('single',this)">
+      <span class="tab-icon">🛒</span>單點商品
+    </button>
+    <button class="tab" onclick="switchTab('cart',this)">
+      <span class="tab-icon">📋</span>購物車
+    </button>
+    <button class="tab" onclick="switchTab('checkout',this)">
+      <span class="tab-icon">💳</span>結帳
+    </button>
+  </div>
+
+  <!-- AI RECOMMEND BUTTON (shown on meals tab) -->
+  <div id="aiRecommendBtn" style="margin-bottom:16px;">
+    <button onclick="openAiModal()" style="width:100%; padding:14px; border:2.5px dashed var(--yellow); border-radius:14px; background:linear-gradient(135deg,#fffbf0,#fff8e1); cursor:pointer; display:flex; align-items:center; gap:12px; font-family:inherit; transition:all .2s;" onmouseover="this.style.borderStyle='solid'" onmouseout="this.style.borderStyle='dashed'">
+      <span style="font-size:28px">🤖</span>
+      <div style="text-align:left; flex:1;">
+        <div style="font-weight:900; font-size:15px; color:var(--dark)">AI 套餐推薦</div>
+        <div style="font-size:12px; color:#888; margin-top:2px">輸入預算，幫你找最划算組合</div>
+      </div>
+      <span style="font-size:20px; color:var(--yellow)">→</span>
+    </button>
+  </div>
+
+  <!-- PANEL: MEALS -->
+  <div class="panel active" id="panel-meals">
+    <div class="section-title">🍱 指定套餐</div>
+    <div class="meal-grid" id="mealGrid"></div>
+  </div>
+
+  <!-- PANEL: SINGLE -->
+  <div class="panel" id="panel-single">
+    <div class="section-title">🛒 單點商品</div>
+    <div class="product-list" id="productList"></div>
+  </div>
+
+  <!-- PANEL: CART -->
+  <div class="panel" id="panel-cart">
+    <div class="section-title">📋 購物車</div>
+    <div id="cartContent"></div>
+  </div>
+
+  <!-- PANEL: CHECKOUT -->
+  <div class="panel" id="panel-checkout">
+    <div class="section-title">💳 結帳</div>
+    <div id="checkoutContent"></div>
+  </div>
+
+</div>
+
+<!-- ── BOTTOM CART BAR ── -->
+<div class="cart-bar">
+  <div class="cart-bar-icon" onclick="switchTab('cart',null)">
+    🛒
+    <span class="cart-badge" id="cartBadge">0</span>
+  </div>
+  <div>
+    <div class="cart-bar-total">$<span id="barTotal">0</span></div>
+    <div class="cart-bar-sub" id="barItems">購物車是空的</div>
+  </div>
+  <button class="btn-primary" style="width:auto;padding:10px 20px;font-size:15px" onclick="switchTab('checkout',null)">去結帳 →</button>
+</div>
+
+<!-- ── MODALS ── -->
+<!-- Member Modal -->
+<div class="modal-overlay" id="memberModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal('memberModal')">✕</button>
+    <h2 id="memberModalTitle">🔐 會員登入</h2>
+    <div id="memberModalBody"></div>
+  </div>
+</div>
+
+<!-- Lucky Wheel Modal -->
+<div class="modal-overlay" id="wheelModal">
+  <div class="modal" style="text-align:center">
+    <h2>🎡 幸運轉盤</h2>
+    <div class="wheel-anim" id="wheelEmoji">🎰</div>
+    <p id="wheelResult" style="font-size:18px;font-weight:700;margin-top:16px"></p>
+  </div>
+</div>
+
+<!-- Receipt Modal -->
+<div class="modal-overlay" id="receiptModal">
+  <div class="modal">
+    <h2>🧾 結帳完成</h2>
+    <div id="receiptContent"></div>
+    <button class="btn-primary" style="margin-top:16px" onclick="newOrder()">開始新訂單</button>
+  </div>
+</div>
+
+<!-- AI Recommend Modal -->
+<div class="modal-overlay" id="aiModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal('aiModal')">✕</button>
+    <h2>🤖 AI 套餐推薦</h2>
+    <p style="font-size:13px;color:#888;margin-bottom:18px">輸入預算與需求，AI 幫你搭配最划算組合！</p>
+    <div class="form-group">
+      <label>💰 今日預算（元）</label>
+      <input class="form-input" id="aiBudget" type="number" placeholder="例：300" min="80" />
+    </div>
+    <div class="form-group">
+      <label>👥 幾個人吃？</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="aiPeopleRow">
+        <button class="ai-opt-btn active" data-val="1" onclick="selectAiOpt(this,'people')">1人</button>
+        <button class="ai-opt-btn" data-val="2" onclick="selectAiOpt(this,'people')">2人</button>
+        <button class="ai-opt-btn" data-val="3" onclick="selectAiOpt(this,'people')">3人</button>
+        <button class="ai-opt-btn" data-val="4" onclick="selectAiOpt(this,'people')">4人+</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>🎯 偏好</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="ai-opt-btn active" data-val="balanced" onclick="selectAiOpt(this,'pref')">均衡</button>
+        <button class="ai-opt-btn" data-val="filling" onclick="selectAiOpt(this,'pref')">份量大</button>
+        <button class="ai-opt-btn" data-val="light" onclick="selectAiOpt(this,'pref')">低熱量</button>
+        <button class="ai-opt-btn" data-val="value" onclick="selectAiOpt(this,'pref')">超值省錢</button>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="runAiRecommend()">✨ 幫我推薦！</button>
+    <div id="aiResult" style="margin-top:18px"></div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── DATA ──
+// Inline SVG illustrations for each meal (no external requests needed)
+const MEAL_SVGS = {
+  A: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="150" fill="#FFF3E0"/>
+    <!-- sesame bun top -->
+    <ellipse cx="100" cy="58" rx="52" ry="30" fill="#E8A838"/>
+    <ellipse cx="100" cy="52" rx="48" ry="26" fill="#F5C14E"/>
+    <circle cx="88" cy="48" r="3" fill="#C8860A" opacity=".6"/>
+    <circle cx="100" cy="44" r="2.5" fill="#C8860A" opacity=".6"/>
+    <circle cx="112" cy="48" r="3" fill="#C8860A" opacity=".6"/>
+    <circle cx="94" cy="54" r="2" fill="#C8860A" opacity=".5"/>
+    <circle cx="107" cy="53" r="2" fill="#C8860A" opacity=".5"/>
+    <!-- lettuce -->
+    <ellipse cx="100" cy="72" rx="54" ry="8" fill="#66BB6A"/>
+    <path d="M52 70 Q70 62 88 70 Q100 63 112 70 Q130 62 148 70" stroke="#43A047" stroke-width="2" fill="none"/>
+    <!-- cheese -->
+    <rect x="50" y="74" width="100" height="8" rx="3" fill="#FFD54F"/>
+    <!-- patty -->
+    <ellipse cx="100" cy="86" rx="52" ry="10" fill="#6D3A1F"/>
+    <ellipse cx="100" cy="84" rx="50" ry="9" fill="#8B4513"/>
+    <!-- bun bottom -->
+    <ellipse cx="100" cy="96" rx="54" ry="12" fill="#E8A838"/>
+    <ellipse cx="100" cy="93" rx="52" ry="10" fill="#F5C14E"/>
+    <!-- fries -->
+    <rect x="22" y="75" width="14" height="44" rx="4" fill="#E53935"/>
+    <rect x="24" y="55" width="4" height="24" rx="2" fill="#FFD54F"/>
+    <rect x="29" y="52" width="4" height="27" rx="2" fill="#FFC107"/>
+    <rect x="34" y="57" width="4" height="22" rx="2" fill="#FFD54F"/>
+    <!-- cup -->
+    <path d="M158 78 L164 118 H176 L182 78 Z" fill="#E53935"/>
+    <rect x="158" y="75" width="24" height="7" rx="3" fill="#B71C1C"/>
+    <rect x="162" y="68" width="16" height="8" rx="3" fill="#fff" opacity=".9"/>
+    <line x1="170" y1="55" x2="170" y2="68" stroke="#90A4AE" stroke-width="2"/>
+    <ellipse cx="170" cy="55" rx="4" ry="2" fill="#B0BEC5"/>
+  </svg>`,
+
+  B: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="150" fill="#FFF8E1"/>
+    <!-- chicken sandwich -->
+    <ellipse cx="78" cy="55" rx="44" ry="24" fill="#F5C14E"/>
+    <ellipse cx="78" cy="50" rx="41" ry="21" fill="#FFD54F"/>
+    <!-- chicken fillet -->
+    <ellipse cx="78" cy="68" rx="43" ry="12" fill="#D4691E"/>
+    <ellipse cx="78" cy="66" rx="41" ry="10" fill="#E8832A"/>
+    <!-- crunch texture -->
+    <path d="M45 64 Q55 60 65 65 Q75 60 85 65 Q95 60 105 65 Q112 62 118 66" stroke="#C0621A" stroke-width="1.5" fill="none"/>
+    <!-- lettuce -->
+    <ellipse cx="78" cy="76" rx="44" ry="7" fill="#66BB6A"/>
+    <!-- bun bottom -->
+    <ellipse cx="78" cy="83" rx="44" ry="11" fill="#E8A838"/>
+    <!-- ice cream cup -->
+    <path d="M138 90 L144 130 H162 L168 90 Z" fill="#F8BBD0"/>
+    <rect x="137" y="87" width="32" height="7" rx="3" fill="#F48FB1"/>
+    <!-- swirl -->
+    <ellipse cx="153" cy="84" rx="13" ry="13" fill="#fff"/>
+    <path d="M153 72 Q163 76 163 84 Q163 92 153 94 Q143 92 143 84 Q143 78 148 74" stroke="#F48FB1" stroke-width="2.5" fill="none"/>
+    <circle cx="153" cy="72" r="3" fill="#F06292"/>
+    <!-- tea cup -->
+    <rect x="20" y="85" width="30" height="38" rx="6" fill="#795548"/>
+    <rect x="20" y="85" width="30" height="9" rx="6" fill="#5D4037"/>
+    <path d="M50 97 Q58 97 58 104 Q58 111 50 111" stroke="#795548" stroke-width="3" fill="none"/>
+    <rect x="22" y="94" width="26" height="3" rx="1" fill="#A1887F" opacity=".5"/>
+  </svg>`,
+
+  C: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="150" fill="#E3F2FD"/>
+    <!-- fish sandwich -->
+    <ellipse cx="80" cy="52" rx="46" ry="23" fill="#F5C14E"/>
+    <ellipse cx="80" cy="47" rx="43" ry="20" fill="#FFD54F"/>
+    <!-- tartar sauce -->
+    <ellipse cx="80" cy="66" rx="42" ry="7" fill="#FFFDE7"/>
+    <!-- fish fillet -->
+    <ellipse cx="80" cy="74" rx="44" ry="10" fill="#80DEEA"/>
+    <ellipse cx="80" cy="72" rx="42" ry="9" fill="#4DD0E1"/>
+    <path d="M45 70 Q60 66 75 71 Q88 66 105 71 Q115 68 120 72" stroke="#00ACC1" stroke-width="1.5" fill="none"/>
+    <!-- bun bottom -->
+    <ellipse cx="80" cy="82" rx="45" ry="11" fill="#E8A838"/>
+    <!-- chicken wing -->
+    <path d="M148 60 Q165 50 172 65 Q175 78 162 85 Q150 88 145 78 Z" fill="#E8832A"/>
+    <path d="M148 60 Q155 55 162 62 Q168 70 162 80 Q155 84 148 78 Z" fill="#D4691E"/>
+    <!-- soup cup -->
+    <path d="M18 80 Q18 120 25 122 H52 Q59 120 59 80 Z" fill="#FFF9C4"/>
+    <rect x="18" y="77" width="41" height="8" rx="4" fill="#F9A825"/>
+    <!-- corn kernels in soup -->
+    <circle cx="30" cy="98" r="3" fill="#FFD54F"/>
+    <circle cx="38" cy="94" r="3" fill="#FFD54F"/>
+    <circle cx="46" cy="99" r="3" fill="#FFD54F"/>
+    <circle cx="34" cy="106" r="3" fill="#FFD54F"/>
+    <circle cx="43" cy="108" r="3" fill="#FFD54F"/>
+  </svg>`,
+
+  D: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="150" fill="#F1F8E9"/>
+    <!-- chicken nuggets box -->
+    <rect x="15" y="70" width="60" height="52" rx="8" fill="#E53935"/>
+    <rect x="15" y="70" width="60" height="16" rx="8" fill="#B71C1C"/>
+    <text x="45" y="82" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFD54F">McNuggets</text>
+    <!-- nuggets -->
+    <ellipse cx="32" cy="103" rx="12" ry="9" fill="#FFB74D"/>
+    <ellipse cx="32" cy="101" rx="11" ry="8" fill="#FFA726"/>
+    <ellipse cx="52" cy="108" rx="11" ry="8" fill="#FFB74D"/>
+    <ellipse cx="52" cy="106" rx="10" ry="7" fill="#FFA726"/>
+    <ellipse cx="42" cy="97" rx="10" ry="8" fill="#FFB74D"/>
+    <ellipse cx="42" cy="95" rx="9" ry="7" fill="#FFA726"/>
+    <!-- salad bowl -->
+    <ellipse cx="135" cy="95" rx="38" ry="12" fill="#A5D6A7"/>
+    <path d="M97 95 Q97 130 135 132 Q173 130 173 95 Z" fill="#C8E6C9"/>
+    <ellipse cx="120" cy="88" rx="8" ry="5" fill="#EF5350" opacity=".8"/>
+    <ellipse cx="148" cy="86" rx="7" ry="4" fill="#FF8A65" opacity=".8"/>
+    <circle cx="130" cy="92" r="5" fill="#FFF176"/>
+    <circle cx="143" cy="93" r="4" fill="#EF5350" opacity=".7"/>
+    <path d="M110 90 Q125 84 140 88 Q155 84 165 90" stroke="#66BB6A" stroke-width="2" fill="none"/>
+    <!-- sprite cup -->
+    <path d="M80 78 L86 128 H106 L112 78 Z" fill="#C8E6C9"/>
+    <rect x="80" y="75" width="32" height="8" rx="3" fill="#81C784"/>
+    <rect x="84" y="67" width="24" height="9" rx="3" fill="#fff" opacity=".9"/>
+    <line x1="96" y1="54" x2="96" y2="67" stroke="#90A4AE" stroke-width="2"/>
+  </svg>`,
+
+  E: `<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="150" fill="#FFFDE7"/>
+    <!-- large fries box -->
+    <path d="M60 62 L50 130 H138 L128 62 Z" fill="#E53935"/>
+    <rect x="58" y="58" width="72" height="14" rx="5" fill="#B71C1C"/>
+    <text x="94" y="70" text-anchor="middle" font-size="9" font-weight="bold" fill="#FFD54F">FRIES</text>
+    <!-- fry sticks -->
+    <rect x="66" y="30" width="7" height="36" rx="3" fill="#FFD54F"/>
+    <rect x="75" y="25" width="7" height="38" rx="3" fill="#FFC107"/>
+    <rect x="84" y="22" width="7" height="40" rx="3" fill="#FFD54F"/>
+    <rect x="93" y="26" width="7" height="36" rx="3" fill="#FFC107"/>
+    <rect x="102" y="24" width="7" height="38" rx="3" fill="#FFD54F"/>
+    <rect x="111" y="29" width="7" height="33" rx="3" fill="#FFC107"/>
+    <!-- ice cream -->
+    <path d="M155 100 L163 138 H177 L185 100 Z" fill="#FCE4EC"/>
+    <rect x="154" y="97" width="32" height="7" rx="3" fill="#F48FB1"/>
+    <ellipse cx="170" cy="94" rx="14" ry="14" fill="#fff"/>
+    <path d="M170 80 Q181 85 181 94 Q181 103 170 105 Q159 103 159 94 Q159 87 165 82" stroke="#F48FB1" stroke-width="3" fill="none"/>
+    <circle cx="170" cy="80" r="3.5" fill="#F06292"/>
+    <!-- tea cup small -->
+    <rect x="18" y="85" width="28" height="36" rx="5" fill="#6D4C41"/>
+    <rect x="18" y="85" width="28" height="9" rx="5" fill="#4E342E"/>
+    <path d="M46 97 Q53 97 53 103 Q53 109 46 109" stroke="#6D4C41" stroke-width="3" fill="none"/>
+  </svg>`
+};
+
+// Calorie data (kcal per serving)
+const MEAL_KCAL = { A:920, B:850, C:780, D:640, E:580 };
+const PROD_KCAL = [540, 490, 390, 230, 140, 90, 180, 280, 230, 260, 120]; // matches PRODUCTS order
+
+const MEALS = [
+  { code:'A', name:'吉士堡套餐', items:'吉士堡＋薯條＋可樂',     price:150 },
+  { code:'B', name:'麥香雞套餐', items:'麥香雞＋冰炫風＋紅茶',   price:140 },
+  { code:'C', name:'麥香魚套餐', items:'麥香魚＋雞翅＋玉米濃湯', price:130 },
+  { code:'D', name:'雞塊套餐',   items:'雞塊＋沙拉＋雪碧',       price:90  },
+  { code:'E', name:'薯條套餐',   items:'薯條＋冰炫風＋紅茶',     price:80  },
+];
+
+const PRODUCTS = [
+  { name:'吉士堡', price:90,  emoji:'🍔' },
+  { name:'麥香雞', price:95,  emoji:'🍗' },
+  { name:'麥香魚', price:75,  emoji:'🐟' },
+  { name:'冰炫風', price:45,  emoji:'🍦' },
+  { name:'雪碧',   price:30,  emoji:'🥤' },
+  { name:'紅茶',   price:40,  emoji:'🍵' },
+  { name:'玉米湯', price:55,  emoji:'🌽' },
+  { name:'雞塊',   price:60,  emoji:'🍗' },
+  { name:'薯條',   price:30,  emoji:'🍟' },
+  { name:'雞翅',   price:55,  emoji:'🍖' },
+  { name:'沙拉',   price:65,  emoji:'🥗' },
+];
+
+const PRIZES = [
+  { label:'🍦 冰炫風買一送一券', discount:0 },
+  { label:'🥚 一盒蛋塔券',       discount:0 },
+  { label:'💰 現折 50 元',       discount:50 },
+  { label:'🥤 免費可樂一杯',     discount:0 },
+  { label:'🥔 薯餅兌換券',       discount:0 },
+  { label:'😅 謝謝參與，下次好運', discount:0 },
+];
+
+// ── STATE ──
+let allMembers    = {}; // { name: pw }
+let memberPoints  = {}; // { name: pts }
+let isMember      = false;
+let memberName    = '';
+let cart          = {}; // { 'meal-A': {type:'meal',code:'A',name,price,qty}, 'prod-3': {...} }
+let total         = 0;
+let selectedPay   = '';
+
+// Daily special
+const dsIdx   = Math.floor(Math.random() * PRODUCTS.length);
+const dsItem  = PRODUCTS[dsIdx];
+const dsPrice = dsItem.price - 20;
+
+// ── INIT ──
+document.getElementById('dailyName').textContent = dsItem.name;
+document.getElementById('dailyOld').textContent  = '$' + dsItem.price;
+document.getElementById('dailyNew').textContent  = '$' + dsPrice;
+renderMeals();
+renderProducts();
+
+// ── TAB ──
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    const tabs = { meals:0, single:1, cart:2, checkout:3 };
+    document.querySelectorAll('.tab')[tabs[id]]?.classList.add('active');
+  }
+  document.getElementById('aiRecommendBtn').style.display = id === 'meals' ? 'block' : 'none';
+  if (id === 'cart')     renderCart();
+  if (id === 'checkout') renderCheckout();
+}
+
+// ── AI RECOMMEND ──
+let aiPeople = 1, aiPref = 'balanced';
+function selectAiOpt(el, type) {
+  const group = el.parentElement.querySelectorAll('.ai-opt-btn');
+  group.forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (type === 'people') aiPeople = parseInt(el.dataset.val) || 4;
+  else aiPref = el.dataset.val;
+}
+
+function openAiModal() {
+  aiPeople = 1; aiPref = 'balanced';
+  document.getElementById('aiBudget').value = '';
+  document.getElementById('aiResult').innerHTML = '';
+  document.querySelectorAll('#aiModal .ai-opt-btn').forEach((b,i) => b.classList.toggle('active', i===0 || i===4));
+  openModal('aiModal');
+}
+
+function runAiRecommend() {
+  const budget = parseInt(document.getElementById('aiBudget').value);
+  if (!budget || budget < 80) { showToast('請輸入有效預算（至少 $80）', 'error'); return; }
+
+  const resultEl = document.getElementById('aiResult');
+  resultEl.innerHTML = `<div style="text-align:center;padding:20px;color:#aaa;font-size:14px">🤖 分析中…</div>`;
+
+  setTimeout(() => {
+    const combos = generateCombos(budget, aiPeople, aiPref);
+    if (!combos.length) {
+      resultEl.innerHTML = `<div style="text-align:center;padding:20px;color:#aaa">😅 預算不足，最低套餐需 $80，試試提高預算！</div>`;
+      return;
+    }
+    resultEl.innerHTML = combos.map((c, i) => `
+      <div class="ai-result-card">
+        <div class="tag ${i===0?'best':'alt'}">${i===0?'🏆 最推薦':'💡 備選方案'}</div>
+        <div class="ai-result-title">${c.title}</div>
+        <div class="ai-result-items">${c.lines.join('<br>')}</div>
+        <div class="ai-result-meta">
+          <span>💰 共 $${c.price}</span>
+          <span style="color:${budget-c.price>=0?'#2E7D32':'#B71C1C'}">餘 $${budget - c.price}</span>
+          <span>🔥 ${c.kcal} kcal</span>
+        </div>
+        <button class="ai-add-btn" onclick="addComboToCart(${JSON.stringify(c.items).replace(/"/g,'&quot;')})">＋ 加入購物車</button>
+      </div>
+    `).join('');
+  }, 800);
+}
+
+function generateCombos(budget, people, pref) {
+  // Score each meal per person
+  const scored = MEALS.map(m => {
+    let score = 0;
+    if (pref === 'filling') score = MEAL_KCAL[m.code];
+    else if (pref === 'light') score = -MEAL_KCAL[m.code];
+    else if (pref === 'value') score = MEAL_KCAL[m.code] / m.price * 100;
+    else score = MEAL_KCAL[m.code] / m.price * 80 - Math.abs(MEAL_KCAL[m.code] - 750) / 10;
+    return { ...m, score };
+  }).sort((a,b) => b.score - a.score);
+
+  const results = [];
+
+  // Try top combo: same meal for all people
+  for (const m of scored) {
+    const totalP = m.price * people;
+    if (totalP <= budget) {
+      results.push({
+        title: `${m.name} × ${people}`,
+        lines: [`套餐 ${m.code}：${m.items}`, `每份 $${m.price}，共 ${people} 份`],
+        price: totalP,
+        kcal: MEAL_KCAL[m.code] * people,
+        items: [{ type:'meal', code:m.code, qty:people }]
+      });
+      break;
+    }
+  }
+
+  // Try mixed combo (2 different meals)
+  if (people >= 2) {
+    for (let i = 0; i < scored.length; i++) {
+      for (let j = i; j < scored.length; j++) {
+        const half1 = Math.ceil(people / 2), half2 = Math.floor(people / 2);
+        const totalP = scored[i].price * half1 + scored[j].price * half2;
+        if (totalP <= budget && !(results[0] && results[0].title.includes(scored[i].name) && results[0].title.includes(scored[j].name))) {
+          results.push({
+            title: `${scored[i].name} + ${scored[j].name}`,
+            lines: [
+              `套餐 ${scored[i].code}：${scored[i].items} × ${half1}`,
+              `套餐 ${scored[j].code}：${scored[j].items} × ${half2}`
+            ],
+            price: totalP,
+            kcal: MEAL_KCAL[scored[i].code] * half1 + MEAL_KCAL[scored[j].code] * half2,
+            items: [
+              { type:'meal', code:scored[i].code, qty:half1 },
+              { type:'meal', code:scored[j].code, qty:half2 }
+            ]
+          });
+          if (results.length >= 2) break;
+        }
+      }
+      if (results.length >= 2) break;
+    }
+  }
+
+  return results.slice(0, 2);
+}
+
+function addComboToCart(items) {
+  for (const item of items) {
+    if (item.type === 'meal') {
+      const key  = 'meal-' + item.code;
+      const meal = MEALS.find(m => m.code === item.code);
+      if (!cart[key]) cart[key] = { type:'meal', code:item.code, name:meal.name, price:meal.price, qty:0 };
+      cart[key].qty += item.qty;
+      document.getElementById('mq-' + item.code).textContent = cart[key].qty;
+    }
+  }
+  reCalcTotal();
+  closeModal('aiModal');
+  showToast('✅ 推薦套餐已加入購物車！', 'success');
+}
+
+// ── MEALS ──
+function renderMeals() {
+  const g = document.getElementById('mealGrid');
+  g.innerHTML = MEALS.map(m => `
+    <div class="meal-card" id="mc-${m.code}">
+      <div class="meal-img-wrap">
+        ${MEAL_SVGS[m.code]}
+        <div class="meal-img-badge">${m.code}</div>
+        <div class="meal-img-price">$${m.price}</div>
+        <div class="cal-badge">🔥 ${MEAL_KCAL[m.code]} kcal</div>
+      </div>
+      <div class="meal-body">
+        <div class="meal-name">${m.name}</div>
+        <div class="meal-items">${m.items.split('＋').join(' · ')}</div>
+        <div class="meal-qty-row">
+          <button class="qty-btn" onclick="changeMealQty('${m.code}',-1)">−</button>
+          <div class="qty-num" id="mq-${m.code}">0</div>
+          <button class="qty-btn" onclick="changeMealQty('${m.code}',1)">＋</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function changeMealQty(code, delta) {
+  const key  = 'meal-' + code;
+  const meal = MEALS.find(m => m.code === code);
+  if (!cart[key]) cart[key] = { type:'meal', code, name:`套餐${code}`, price:meal.price, qty:0 };
+  cart[key].qty = Math.max(0, cart[key].qty + delta);
+  if (cart[key].qty === 0) delete cart[key];
+  const qty = cart[key]?.qty ?? 0;
+  document.getElementById('mq-' + code).textContent = qty;
+  reCalcTotal();
+  if (delta > 0) showToast(`✅ 套餐 ${code} 加入購物車`, 'success');
+}
+
+// ── PRODUCTS ──
+function renderProducts() {
+  const l = document.getElementById('productList');
+  l.innerHTML = PRODUCTS.map((p, i) => {
+    const isSpecial = i === dsIdx;
+    const curPrice  = isSpecial ? dsPrice : p.price;
+    const priceHtml = isSpecial
+      ? `<span class="product-old">$${p.price}</span><span style="color:var(--red);font-weight:900">$${dsPrice}</span>`
+      : `<span class="product-price">$${p.price}</span>`;
+    const tag = isSpecial ? '<span class="product-special-tag">特價</span>' : '';
+    return `
+      <div class="product-row">
+        <span class="product-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="product-emoji">${p.emoji}</span>
+        <span class="product-name">${p.name}${tag}</span>
+        <span style="font-size:11px;color:#bbb;margin-right:4px">🔥${PROD_KCAL[i]}</span>
+        ${priceHtml}
+        <div class="meal-qty-row" style="margin-top:0">
+          <button class="qty-btn" onclick="changeProdQty(${i},-1)">−</button>
+          <div class="qty-num" id="pq-${i}">0</div>
+          <button class="qty-btn" onclick="changeProdQty(${i},1)">＋</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function changeProdQty(idx, delta) {
+  const key  = 'prod-' + idx;
+  const prod = PRODUCTS[idx];
+  const isSpecial = idx === dsIdx;
+  const curPrice  = isSpecial ? dsPrice : prod.price;
+  if (!cart[key]) cart[key] = { type:'prod', idx, name:prod.name, emoji:prod.emoji, price:curPrice, qty:0 };
+  cart[key].qty = Math.max(0, cart[key].qty + delta);
+  if (cart[key].qty === 0) delete cart[key];
+  document.getElementById('pq-' + idx).textContent = cart[key]?.qty ?? 0;
+  reCalcTotal();
+  if (delta > 0) showToast(`✅ ${prod.name} 加入購物車`, 'success');
+}
+
+// ── CART ──
+function reCalcTotal() {
+  total = Object.values(cart).reduce((s, v) => s + v.price * v.qty, 0);
+  const count = Object.values(cart).reduce((s, v) => s + v.qty, 0);
+  document.getElementById('barTotal').textContent = total;
+  document.getElementById('cartBadge').textContent = count;
+  document.getElementById('barItems').textContent = count > 0 ? `共 ${count} 件商品` : '購物車是空的';
+  updateCalorieBar();
+}
+
+function getTotalKcal() {
+  let kcal = 0;
+  for (const [key, v] of Object.entries(cart)) {
+    if (v.type === 'meal') kcal += (MEAL_KCAL[v.code] || 0) * v.qty;
+    else kcal += (PROD_KCAL[v.idx] || 0) * v.qty;
+  }
+  return kcal;
+}
+
+function updateCalorieBar() {
+  const bar = document.getElementById('calorieBar');
+  const kcal = getTotalKcal();
+  if (kcal === 0) { bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  document.getElementById('calTotal').textContent = kcal;
+  const pct = Math.min(100, Math.round(kcal / 2000 * 100));
+  document.getElementById('calBar').style.width = pct + '%';
+  const judge = document.getElementById('calJudge');
+  if (kcal < 600)       { judge.textContent = '🥗 清淡';  judge.style.background='#E8F5E9'; judge.style.color='#2E7D32'; }
+  else if (kcal < 1000) { judge.textContent = '✅ 適量';  judge.style.background='#E3F2FD'; judge.style.color='#1565C0'; }
+  else if (kcal < 1500) { judge.textContent = '⚠️ 偏高'; judge.style.background='#FFF8E1'; judge.style.color='#E65100'; }
+  else                   { judge.textContent = '🔥 超標！'; judge.style.background='#FFEBEE'; judge.style.color='#B71C1C'; }
+}
+
+function renderCart() {
+  const el = document.getElementById('cartContent');
+  const items = Object.entries(cart);
+  if (!items.length) {
+    el.innerHTML = `<div class="cart-empty"><span class="big-emoji">🛒</span>購物車是空的，快去選些好料！</div>`;
+    return;
+  }
+
+  let discountInfo = '';
+  let displayTotal = total;
+
+  // Tier discount preview
+  if (total >= 1000) {
+    displayTotal = Math.ceil(total * 0.85);
+    discountInfo = '🎊 消費破千，享 85 折！';
+  } else if (total >= 500) {
+    displayTotal = Math.ceil(total * 0.9);
+    discountInfo = '🎉 消費破五百，享 9 折！';
+  } else if (total >= 400) {
+    discountInfo = `💡 再加 $${500 - total} 元即可享 9 折折扣！`;
+  }
+
+  const memberDiscount = isMember ? Math.ceil(displayTotal * 0.95) : displayTotal;
+
+  el.innerHTML = `
+    ${items.map(([key, v]) => `
+      <div class="cart-item">
+        <span style="font-size:22px">${v.emoji || '🍱'}</span>
+        <div style="flex:1">
+          <div class="cart-item-name">${v.name}</div>
+          <div class="cart-item-qty">x${v.qty}  × $${v.price}</div>
+        </div>
+        <div class="cart-item-price">$${v.price * v.qty}</div>
+        <button class="cart-remove" onclick="removeCart('${key}')">🗑</button>
+      </div>
+    `).join('')}
+    <div class="cart-summary">
+      <div class="row"><span>小計</span><span>$${total}</span></div>
+      ${discountInfo ? `<div class="row" style="color:var(--yellow)"><span>${discountInfo}</span><span>$${displayTotal}</span></div>` : ''}
+      ${isMember ? `<div class="row"><span>👤 會員九五折</span><span>$${memberDiscount}</span></div>` : ''}
+      <hr style="border-color:rgba(255,255,255,0.15);margin:12px 0">
+      <div class="row"><span>預估總計</span><span class="total">$${isMember ? memberDiscount : displayTotal}</span></div>
+      ${isMember ? '' : '<div class="discount-note">登入會員可再享九五折</div>'}
+    </div>
+    <button class="btn-primary" style="margin-top:16px" onclick="switchTab(\'checkout\',null)">前往結帳 →</button>
+  `;
+}
+
+function removeCart(key) {
+  if (!cart[key]) return;
+  const name = cart[key].name;
+  // update qty display
+  if (cart[key].type === 'meal') {
+    document.getElementById('mq-' + cart[key].code).textContent = 0;
+  } else {
+    document.getElementById('pq-' + cart[key].idx).textContent = 0;
+  }
+  delete cart[key];
+  reCalcTotal();
+  renderCart();
+  showToast(`🗑 已移除 ${name}`, 'info');
+}
+
+// ── CHECKOUT ──
+function renderCheckout() {
+  const el = document.getElementById('checkoutContent');
+  if (!Object.keys(cart).length) {
+    el.innerHTML = `<div class="cart-empty"><span class="big-emoji">💳</span>購物車是空的，請先加入商品！</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="checkout-section">
+      <h3>訂單摘要</h3>
+      ${Object.values(cart).map(v => `
+        <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px">
+          <span>${v.emoji||'🍱'} ${v.name} x${v.qty}</span>
+          <span style="font-weight:700">$${v.price*v.qty}</span>
+        </div>`).join('')}
+      <hr style="border:none;border-top:2px dashed #eee;margin:12px 0">
+      <div style="display:flex;justify-content:space-between;font-weight:900;font-size:16px">
+        <span>合計</span><span style="color:var(--red)">$${total}</span>
+      </div>
+    </div>
+    <div class="checkout-section">
+      <h3>💳 付款方式</h3>
+      <div class="pay-options">
+        <div class="pay-opt ${selectedPay==='card'?'selected':''}" onclick="selPay('card',this)">
+          <span class="pay-icon">💳</span>信用卡
+        </div>
+        <div class="pay-opt ${selectedPay==='line'?'selected':''}" onclick="selPay('line',this)">
+          <span class="pay-icon">📱</span>LINE Pay
+        </div>
+        <div class="pay-opt ${selectedPay==='cash'?'selected':''}" onclick="selPay('cash',this)">
+          <span class="pay-icon">💵</span>現金
+        </div>
+      </div>
+    </div>
+    ${isMember ? `<div class="checkout-section" style="background:#fffbf0;border:2px solid var(--yellow)">
+      <h3>👤 會員優惠</h3>
+      <p style="font-size:14px">九五折折扣 → <strong style="color:var(--red)">$${Math.ceil(total*0.95)}</strong>（省 $${total - Math.ceil(total*0.95)} 元）</p>
+      <p style="font-size:13px;color:#888;margin-top:6px">本次可獲得 <strong>${Math.floor(Math.ceil(total*0.95)/10)}</strong> 積分</p>
+    </div>` : `<div class="checkout-section" style="background:#fff5f5;border:2px dashed var(--red)">
+      <p style="font-size:14px">🔑 <strong>登入會員</strong> 即享九五折 + 積分回饋！</p>
+    </div>`}
+    <button class="btn-primary" onclick="doCheckout()" ${selectedPay?'':'disabled'}>
+      ${selectedPay ? '確認結帳 🎉' : '請先選擇付款方式'}
+    </button>
+  `;
+}
+
+function selPay(type, el) {
+  selectedPay = type;
+  document.querySelectorAll('.pay-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  renderCheckout();
+}
+
+async function doCheckout() {
+  if (!Object.keys(cart).length) { showToast('購物車是空的！', 'error'); return; }
+  // Lucky wheel
+  await runLuckyWheel();
+}
+
+async function runLuckyWheel() {
+  openModal('wheelModal');
+  const emojis = ['🎰','🍀','🎲','🎡','💫','🌟'];
+  const el = document.getElementById('wheelEmoji');
+  let i = 0;
+  await new Promise(r => {
+    const timer = setInterval(() => {
+      el.textContent = emojis[i++ % emojis.length];
+    }, 160);
+    setTimeout(() => { clearInterval(timer); r(); }, 2200);
+  });
+
+  const prize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
+  el.textContent = prize.label.split(' ')[0];
+
+  let finalTotal = total;
+
+  // Tier discount
+  if (finalTotal >= 1000)     finalTotal = Math.ceil(finalTotal * 0.85);
+  else if (finalTotal >= 500) finalTotal = Math.ceil(finalTotal * 0.9);
+
+  // Prize discount
+  if (prize.discount) {
+    finalTotal = Math.max(0, finalTotal - prize.discount);
+  }
+
+  // Member discount
+  let ptsEarned = 0;
+  if (isMember) {
+    finalTotal = Math.ceil(finalTotal * 0.95);
+    ptsEarned  = Math.floor(finalTotal / 10);
+    memberPoints[memberName] = (memberPoints[memberName] || 0) + ptsEarned;
+    updateMemberUI();
+  }
+
+  document.getElementById('wheelResult').innerHTML =
+    `🎁 恭喜獲得：<strong>${prize.label}</strong>${prize.discount ? `<br>已折抵 $${prize.discount}！` : ''}`;
+
+  await new Promise(r => setTimeout(r, 2200));
+  closeModal('wheelModal');
+  showReceipt(finalTotal, prize, ptsEarned);
+}
+
+function showReceipt(finalTotal, prize, ptsEarned) {
+  const now  = new Date();
+  const dateStr = now.toLocaleDateString('zh-TW') + ' ' + now.toLocaleTimeString('zh-TW');
+  const payLabel = { card:'信用卡', line:'LINE Pay', cash:'現金' }[selectedPay];
+
+  const rows = Object.values(cart).map(v =>
+    `<div class="receipt-row"><span>${v.name} x${v.qty}</span><span>$${v.price*v.qty}</span></div>`
+  ).join('');
+
+  let discountRow = '';
+  if (total >= 1000)     discountRow = `<div class="receipt-row"><span>🎊 破千八五折</span><span>-$${total - Math.ceil(total*0.85)}</span></div>`;
+  else if (total >= 500) discountRow = `<div class="receipt-row"><span>🎉 破五百九折</span><span>-$${total - Math.ceil(total*0.9)}</span></div>`;
+  if (prize.discount)    discountRow += `<div class="receipt-row"><span>🎁 幸運轉盤折抵</span><span>-$${prize.discount}</span></div>`;
+  if (isMember)          discountRow += `<div class="receipt-row"><span>👤 會員九五折</span><span>折後 $${finalTotal}</span></div>`;
+
+  document.getElementById('receiptContent').innerHTML = `
+    <div class="receipt">
+      <div class="receipt-header">
+        <div class="receipt-logo">賣噹噹</div>
+        <div class="receipt-date">${dateStr}</div>
+        ${isMember ? `<div style="margin-top:6px"><span class="pts-pill">⭐ ${memberName}</span></div>` : ''}
+      </div>
+      <hr class="receipt-divider">
+      ${rows}
+      ${discountRow ? `<hr class="receipt-divider">${discountRow}` : ''}
+      <hr class="receipt-divider">
+      <div class="receipt-total-row"><span>合計</span><span style="color:var(--red)">$${finalTotal}</span></div>
+      <div class="receipt-row" style="margin-top:8px"><span>付款方式</span><span>${payLabel}</span></div>
+      <div class="receipt-row" style="color:#E65100"><span>🔥 總熱量</span><span>${getTotalKcal()} kcal</span></div>
+      ${ptsEarned ? `<div class="receipt-row" style="color:var(--orange)"><span>⭐ 獲得積分</span><span>+${ptsEarned} 點（累計 ${memberPoints[memberName]} 點）</span></div>` : ''}
+      <div class="receipt-thanks">
+        🙏 感謝光臨賣噹噹<br>歡迎下次再來！
+      </div>
+    </div>
+  `;
+  openModal('receiptModal');
+}
+
+function newOrder() {
+  closeModal('receiptModal');
+  cart = {};
+  total = 0;
+  selectedPay = '';
+  // reset qty displays
+  MEALS.forEach(m => { const el = document.getElementById('mq-' + m.code); if(el) el.textContent=0; });
+  PRODUCTS.forEach((_, i) => { const el = document.getElementById('pq-' + i); if(el) el.textContent=0; });
+  reCalcTotal();
+  document.getElementById('calorieBar').style.display = 'none';
+  switchTab('meals', document.querySelectorAll('.tab')[0]);
+  showToast('🆕 新訂單開始！', 'success');
+}
+
+// ── MEMBER SYSTEM ──
+function openMemberModal() {
+  if (isMember) {
+    // Show member info
+    document.getElementById('memberModalTitle').textContent = `👤 ${memberName}`;
+    document.getElementById('memberModalBody').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:60px">😊</div>
+        <p style="font-size:16px;margin:12px 0">歡迎回來，<strong>${memberName}</strong>！</p>
+        <div class="pts-pill" style="margin:8px auto;display:inline-flex">
+          ⭐ 累計積分：${memberPoints[memberName] || 0} 點
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="logout()" style="width:100%;margin-top:8px">登出</button>
+    `;
+  } else {
+    showLoginForm();
+  }
+  openModal('memberModal');
+}
+
+function showLoginForm() {
+  document.getElementById('memberModalTitle').textContent = '🔐 會員登入';
+  document.getElementById('memberModalBody').innerHTML = `
+    <div class="form-group">
+      <label>帳號</label>
+      <input class="form-input" id="loginAcc" placeholder="輸入帳號" />
+    </div>
+    <div class="form-group">
+      <label>密碼</label>
+      <input class="form-input" id="loginPw" type="password" placeholder="輸入密碼" />
+    </div>
+    <button class="btn-primary" onclick="doLogin()">登入</button>
+    <div style="text-align:center;margin-top:14px">
+      <span style="font-size:14px;color:#888">還沒有帳號？</span>
+      <button class="btn-secondary" onclick="showRegisterForm()" style="margin-left:6px">加入會員</button>
+    </div>
+  `;
+}
+
+function showRegisterForm() {
+  document.getElementById('memberModalTitle').textContent = '🎉 加入會員';
+  document.getElementById('memberModalBody').innerHTML = `
+    <div class="form-group">
+      <label>帳號</label>
+      <input class="form-input" id="regAcc" placeholder="設定帳號" />
+    </div>
+    <div class="form-group">
+      <label>密碼</label>
+      <input class="form-input" id="regPw" type="password" placeholder="設定密碼" />
+    </div>
+    <div class="form-group">
+      <label>確認密碼</label>
+      <input class="form-input" id="regPw2" type="password" placeholder="再次輸入密碼" />
+    </div>
+    <button class="btn-primary" onclick="doRegister()">立即加入</button>
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn-secondary" onclick="showLoginForm()">← 返回登入</button>
+    </div>
+  `;
+}
+
+function doLogin() {
+  const acc = document.getElementById('loginAcc')?.value.trim();
+  const pw  = document.getElementById('loginPw')?.value;
+  if (!acc || !pw) { showToast('請輸入帳號和密碼', 'error'); return; }
+  if (!allMembers[acc]) { showToast('查無此帳號', 'error'); return; }
+  if (allMembers[acc] !== pw) { showToast('密碼錯誤', 'error'); return; }
+  isMember   = true;
+  memberName = acc;
+  updateMemberUI();
+  closeModal('memberModal');
+  showToast(`✅ 歡迎回來，${acc}！`, 'success');
+}
+
+function doRegister() {
+  const acc = document.getElementById('regAcc')?.value.trim();
+  const pw  = document.getElementById('regPw')?.value;
+  const pw2 = document.getElementById('regPw2')?.value;
+  if (!acc) { showToast('請輸入帳號', 'error'); return; }
+  if (allMembers[acc]) { showToast('此帳號已存在', 'error'); return; }
+  if (pw !== pw2) { showToast('兩次密碼不一致', 'error'); return; }
+  if (pw.length < 1) { showToast('請設定密碼', 'error'); return; }
+  allMembers[acc]   = pw;
+  memberPoints[acc] = 0;
+  isMember   = true;
+  memberName = acc;
+  updateMemberUI();
+  closeModal('memberModal');
+  showToast(`🎉 ${acc} 成功加入會員！`, 'success');
+}
+
+function logout() {
+  isMember   = false;
+  memberName = '';
+  updateMemberUI();
+  closeModal('memberModal');
+  showToast('👋 已登出', 'info');
+}
+
+function updateMemberUI() {
+  if (isMember) {
+    document.getElementById('memberAvatar').textContent = memberName[0] || '👤';
+    document.getElementById('memberName').textContent   = memberName;
+    document.getElementById('memberPts').textContent    = `⭐ ${memberPoints[memberName] || 0} 積分`;
+  } else {
+    document.getElementById('memberAvatar').textContent = '👤';
+    document.getElementById('memberName').textContent   = '訪客';
+    document.getElementById('memberPts').textContent    = '登入享九五折 + 積分回饋';
+  }
+}
+
+// ── MODAL UTILS ──
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// Click outside to close
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); });
+});
+
+// ── TOAST ──
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  container.appendChild(t);
+  setTimeout(() => t.remove(), 2800);
+}
+</script>
+</body>
+</html>
